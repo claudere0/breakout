@@ -16,12 +16,45 @@ CYAN = (0,255,255)
 WHITE = (255,255,255)
 BLACK = (0,0,0)
 
+class Paddle:
+    def __init__(self):
+        self.reset()
+
+    def reset(self):
+        self.width = 64
+        self.height = 16
+        self.x = int((WIDTH / 2) - (self.width / 2))
+        self.y = int(HEIGHT - (self.height * 2))
+        self.speed = 8
+        self.rect = pygame.Rect(int(self.x), int(self.y), self.width, self.height)
+        self.direction = 0
+
+    def update(self):
+        self.direction = 0
+        keys = pygame.key.get_pressed()
+
+        if keys[pygame.K_LEFT] and self.rect.left >= 0:
+            self.x -= self.speed
+            self.direction = -1
+
+        if keys[pygame.K_RIGHT] and self.rect.right <= WIDTH:
+            self.x += self.speed
+            self.direction = 1
+        
+        self.rect.x = int(self.x)
+
+    def draw(self, screen):
+        pygame.draw.rect(screen, YELLOW, self.rect)
+        
+
 class Game:
     def __init__(self):
         self.screen = pygame.display.set_mode((WIDTH, HEIGHT))
         pygame.display.set_caption("breakout")
         self.clock = pygame.time.Clock()
         self.screen_color = BLACK
+
+        self.paddle = Paddle()
 
         self.running = True
 
@@ -30,19 +63,15 @@ class Game:
         #     return
 
         # update objects(paddle, ball), handle_collisions(screen, paddle, bricks), check_game_state
+        self.paddle.update()
 
-        # pass
 
-        keys = pygame.key.get_pressed()
-        if keys[pygame.K_w]:
-            self.screen_color = WHITE
-        else:
-            self.screen_color = BLACK
 
     def draw(self):
         self.screen.fill(self.screen_color)
 
         # draw ball, paddle, bricks, ui
+        self.paddle.draw(self.screen)
 
         pygame.display.flip()
 
