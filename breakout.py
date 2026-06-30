@@ -30,7 +30,11 @@ class Game:
 
         # update objects(paddle, ball), handle_collisions(screen, paddle, bricks), check_game_state
 
-        pass
+        keys = pygame.key.get_pressed()
+
+        if keys[pygame.K_w]:
+            self.screen.fill(WHITE)
+        # pass
 
     def draw(self):
         self.screen.fill(BLACK)
