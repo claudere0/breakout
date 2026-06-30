@@ -45,7 +45,36 @@ class Paddle:
 
     def draw(self, screen):
         pygame.draw.rect(screen, YELLOW, self.rect)
-        
+
+class Ball:
+    def __init__(self, x, y):
+        self.reset(x, y)
+    
+    def reset(self, x, y):
+        self.speed_x = 4
+        self.speed_y = -4
+        self.max_speed = 8
+        self.radius = 8
+        self.x = x-self.radius
+        self.y = y
+        self.rect = pygame.Rect(x, y, self.radius * 2, self.radius * 2)
+    
+    def update(self):
+        self.x += self.speed_x
+        self.y += self.speed_y
+
+        self.rect.x = self.x
+        self.rect.y = self.y
+
+    def bounce(self, direction):
+        if direction == 'x':
+            self.speed_x *= -1
+        elif direction == 'y':
+            self.speed_y *= -1
+
+    def draw(self, screen):
+        pygame.draw.circle(screen, CYAN, (self.rect.x + self.radius, self.rect.y + self.radius), self.radius)
+
 
 class Game:
     def __init__(self):
@@ -55,6 +84,7 @@ class Game:
         self.screen_color = BLACK
 
         self.paddle = Paddle()
+        self.ball = Ball(int(WIDTH//2-WIDTH//64), int(WIDTH-(WIDTH//64)*5))
 
         self.running = True
 
@@ -64,6 +94,7 @@ class Game:
 
         # update objects(paddle, ball), handle_collisions(screen, paddle, bricks), check_game_state
         self.paddle.update()
+        self.ball.update()
 
 
 
@@ -72,6 +103,7 @@ class Game:
 
         # draw ball, paddle, bricks, ui
         self.paddle.draw(self.screen)
+        self.ball.draw(self.screen)
 
         pygame.display.flip()
 
