@@ -21,6 +21,7 @@ class Game:
         self.screen = pygame.display.set_mode((WIDTH, HEIGHT))
         pygame.display.set_caption("breakout")
         self.clock = pygame.time.Clock()
+        self.screen_color = BLACK
 
         self.running = True
 
@@ -30,14 +31,16 @@ class Game:
 
         # update objects(paddle, ball), handle_collisions(screen, paddle, bricks), check_game_state
 
-        keys = pygame.key.get_pressed()
-
-        if keys[pygame.K_w]:
-            self.screen.fill(WHITE)
         # pass
 
+        keys = pygame.key.get_pressed()
+        if keys[pygame.K_w]:
+            self.screen_color = WHITE
+        else:
+            self.screen_color = BLACK
+
     def draw(self):
-        self.screen.fill(BLACK)
+        self.screen.fill(self.screen_color)
 
         # draw ball, paddle, bricks, ui
 
