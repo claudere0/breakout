@@ -84,9 +84,33 @@ class Game:
         self.screen_color = BLACK
 
         self.paddle = Paddle()
-        self.ball = Ball(int(WIDTH//2-WIDTH//64), int(WIDTH-(WIDTH//64)*5))
+        self.ball = Ball(int(WIDTH//2-WIDTH//64), int(WIDTH-(WIDTH//64)*6))
 
         self.running = True
+
+    def handle_collisions(self):
+        # screen
+        if self.ball.rect.right >= WIDTH:
+            self.ball.rect.left = WIDTH
+            self.ball.bounce('x')
+
+        if self.ball.rect.left <= 0:
+            self.ball.rect.left = 0
+            self.ball.bounce('x')
+
+        if self.ball.rect.top <= 0:
+            self.ball.rect.top = 0
+            self.ball.bounce('y')
+
+        # paddle
+        if self.ball.rect.colliderect(self.paddle.rect):
+            self.ball.rect.bottom = self.paddle.rect.top
+            self.ball.bounce('y')
+
+            self.ball.speed_x += self.paddle.direction
+            self.ball.speed_x = max(-self.ball.max_speed, min(self.ball.speed_x, self.ball.max_speed))
+
+        # bricks
 
     def update(self):
         # if not self.live_ball:
@@ -95,6 +119,7 @@ class Game:
         # update objects(paddle, ball), handle_collisions(screen, paddle, bricks), check_game_state
         self.paddle.update()
         self.ball.update()
+        self.handle_collisions()
 
 
 
