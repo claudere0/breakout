@@ -44,7 +44,7 @@ class Paddle:
         self.rect.x = int(self.x)
 
     def draw(self, screen):
-        pygame.draw.rect(screen, YELLOW, self.rect)
+        pygame.draw.rect(screen, MAGENTA, self.rect)
 
 class Ball:
     def __init__(self, x, y):
@@ -76,11 +76,12 @@ class Ball:
         pygame.draw.circle(screen, CYAN, (self.rect.x + self.radius, self.rect.y + self.radius), self.radius)
 
 class Brick:
-    def __init__(self, x, y, health):
-        self.width = 64
-        self.height = 16
-        self.rect = pygame.Rect(x, y, health, self.width, self.height)
+    def __init__(self, x, y, health, width, height):
+        self.width = width
+        self.height = height
+        self.rect = pygame.Rect(x, y, self.width, self.height)
         self.health = health
+        self.colors = {4:BLUE, 3:GREEN, 2:YELLOW, 1:RED}
         self.is_alive = True
     
     def hit(self):
@@ -89,19 +90,21 @@ class Brick:
             self.is_alive = False
 
     def color(self):
-        if self.health == 3:
+        if self.health == 4:
+            return BLUE
+        elif self.health == 3:
             return GREEN
         elif self.health == 2:
             return YELLOW
-        elif self.health == 1:
+        elif self.health == 2:
             return RED
-        else: 
+        else:
             return
 
     def draw(self, screen):
         if not self.is_alive:
             return
-        pygame.draw.rect(screen, self.color(), self.rect)
+        pygame.draw.rect(screen, self.colors[self.health], self.rect)
 
 
 class Game:
@@ -121,7 +124,21 @@ class Game:
         self.running = True
 
     def craete_bricks(self):
-        pass
+        self.bricks = []
+
+        for row in range(ROWS):
+            if row < 2:
+                health = 4
+            elif row < 4:
+                health = 3
+            elif row < 6:
+                health = 2
+            elif row < 8:
+                health = 1
+
+            for col in range(COLS):
+                self.bricks.append(Brick(col * (WIDTH//COLS), row * (HEIGHT//16), health, WIDTH//COLS, HEIGHT//16))
+
 
     def restart(self):
         self.paddle.reset()
@@ -172,6 +189,8 @@ class Game:
         # draw ball, paddle, bricks, ui
         self.paddle.draw(self.screen)
         self.ball.draw(self.screen)
+        for brick in self.bricks:
+            brick.draw(self.screen)
 
         pygame.display.flip()
 
