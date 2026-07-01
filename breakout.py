@@ -113,8 +113,23 @@ class Game:
 
         self.paddle = Paddle()
         self.ball = Ball(int(WIDTH//2-WIDTH//64), int(WIDTH-(WIDTH//64)*6))
+        self.craete_bricks()
+
+        self.game_over = 0
+        self.live_ball = False
 
         self.running = True
+
+    def craete_bricks(self):
+        pass
+
+    def restart(self):
+        self.paddle.reset()
+        self.ball.reset(int(WIDTH//2-WIDTH//64), int(WIDTH-(WIDTH//64)*6))
+        self.create_bricks()
+
+        self.game_over = 0
+        self.live_ball = False
 
     def handle_collisions(self):
         # screen
