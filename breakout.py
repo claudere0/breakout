@@ -171,6 +171,11 @@ class Game:
             self.ball.speed_x = max(-self.ball.max_speed, min(self.ball.speed_x, self.ball.max_speed))
 
         # bricks
+        for brick in self.bricks:
+            if self.ball.rect.colliderect(brick.rect):
+                brick.hit()
+                self.ball.bounce('x')
+                self.ball.bounce('y')
 
     def update(self):
         # if not self.live_ball:
