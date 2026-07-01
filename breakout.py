@@ -75,6 +75,34 @@ class Ball:
     def draw(self, screen):
         pygame.draw.circle(screen, CYAN, (self.rect.x + self.radius, self.rect.y + self.radius), self.radius)
 
+class Brick:
+    def __init__(self, x, y, health):
+        self.width = 64
+        self.height = 16
+        self.rect = pygame.Rect(x, y, health, self.width, self.height)
+        self.health = health
+        self.is_alive = True
+    
+    def hit(self):
+        self.health -= 1
+        if self.health <= 0:
+            self.is_alive = False
+
+    def color(self):
+        if self.health == 3:
+            return GREEN
+        elif self.health == 2:
+            return YELLOW
+        elif self.health == 1:
+            return RED
+        else: 
+            return
+
+    def draw(self, screen):
+        if not self.is_alive:
+            return
+        pygame.draw.rect(screen, self.color(), self.rect)
+
 
 class Game:
     def __init__(self):
