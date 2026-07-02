@@ -55,16 +55,11 @@ class Ball:
         self.speed_y = -4
         self.max_speed = 8
         self.radius = 8
-        self.x = x-self.radius
-        self.y = y
-        self.rect = pygame.Rect(x, y, self.radius * 2, self.radius * 2)
+        self.rect = pygame.Rect(x-self.radius, y-self.radius, self.radius * 2, self.radius * 2)
     
     def update(self):
-        self.x += self.speed_x
-        self.y += self.speed_y
-
-        self.rect.x = self.x
-        self.rect.y = self.y
+        self.rect.x += self.speed_x
+        self.rect.y += self.speed_y
 
     def bounce(self, direction):
         if direction == 'x':
@@ -124,6 +119,14 @@ class Game:
 
         self.running = True
 
+    def restart(self):
+        self.paddle.reset()
+        self.ball.reset(int(WIDTH//2-WIDTH//64), int(WIDTH-(WIDTH//64)*6))
+        self.create_bricks()
+
+        self.game_state = 0
+        self.live_ball = True
+
     def create_bricks(self):
         self.bricks = []
 
@@ -140,19 +143,10 @@ class Game:
             for col in range(COLS):
                 self.bricks.append(Brick(col * (WIDTH//COLS), row * (HEIGHT//16), health, WIDTH//COLS, HEIGHT//16))
 
-
-    def restart(self):
-        self.paddle.reset()
-        self.ball.reset(int(WIDTH//2-WIDTH//64), int(WIDTH-(WIDTH//64)*6))
-        self.create_bricks()
-
-        self.game_state = 0
-        self.live_ball = True
-
     def handle_collisions(self):
         # screen
         if self.ball.rect.right >= WIDTH:
-            self.ball.rect.left = WIDTH
+            self.ball.rect.right = WIDTH
             self.ball.bounce('x')
 
         if self.ball.rect.left <= 0:
@@ -188,7 +182,7 @@ class Game:
             self.game_state = -1
         
         if all(not brick.is_alive for brick in self.bricks):
-            self.game_over = 1
+            self.game_state = 1
 
 
     def update(self):
@@ -199,6 +193,7 @@ class Game:
         self.paddle.update()
         self.ball.update()
         self.handle_collisions()
+        self.check_game_state()
 
         if self.game_state != 0:
             self.live_ball = False
