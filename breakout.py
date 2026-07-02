@@ -24,7 +24,7 @@ class Paddle:
         self.width = 64
         self.height = 16
         self.x = int((WIDTH / 2) - (self.width / 2))
-        self.y = int(HEIGHT - (self.height * 2))
+        self.y = int(HEIGHT - (self.height * 4))
         self.speed = 8
         self.rect = pygame.Rect(int(self.x), int(self.y), self.width, self.height)
         self.direction = 0
@@ -55,7 +55,7 @@ class Ball:
         self.speed_y = -4
         self.max_speed = 8
         self.radius = 8
-        self.rect = pygame.Rect(x-self.radius, y-self.radius, self.radius * 2, self.radius * 2)
+        self.rect = pygame.Rect(x, y - 16, self.radius * 2, self.radius * 2)
         self.prev_rect = self.rect.copy()
     
     def update(self):
@@ -102,7 +102,7 @@ class Game:
         self.screen_color = BLACK
 
         self.paddle = Paddle()
-        self.ball = Ball(int(WIDTH//2-WIDTH//64), int(WIDTH-(WIDTH//64)*6))
+        self.ball = Ball(int(WIDTH//2-WIDTH//64), int(WIDTH-(WIDTH//8)))
         self.create_bricks()
 
         self.game_state = 0
@@ -112,7 +112,7 @@ class Game:
 
     def restart(self):
         self.paddle.reset()
-        self.ball.reset(int(WIDTH//2-WIDTH//64), int(WIDTH-(WIDTH//64)*6))
+        self.ball.reset(int(WIDTH//2-WIDTH//64), int(WIDTH-(WIDTH//8)))
         self.create_bricks()
 
         self.game_state = 0
@@ -136,24 +136,11 @@ class Game:
 
     def bricks_collision(self):
         for brick in self.bricks:
+
             if not self.ball.rect.colliderect(brick.rect):
                 continue
 
-            if self.ball.prev_rect.bottom <= brick.rect.top:
-                self.ball.rect.bottom = brick.rect.top
-                self.ball.bounce("y")
-
-            elif self.ball.prev_rect.top >= brick.rect.bottom:
-                self.ball.rect.top = brick.rect.bottom
-                self.ball.bounce("y")
-
-            elif self.ball.prev_rect.right <= brick.rect.left:
-                self.ball.rect.right = brick.rect.left
-                self.ball.bounce("x")
-
-            elif self.ball.prev_rect.left >= brick.rect.right:
-                self.ball.rect.left = brick.rect.right
-                self.ball.bounce("x")
+            self.resolve_collision(brick.rect)
 
             brick.hit()
 
@@ -162,8 +149,38 @@ class Game:
 
             break
 
-    def handle_collisions(self):
-        # screen
+    def resolve_collision(self, rect):
+        if self.ball.prev_rect.bottom <= rect.top:
+            self.ball.rect.bottom = rect.top
+            self.ball.bounce("y")
+            return "top"
+
+        elif self.ball.prev_rect.top >= rect.bottom:
+            self.ball.rect.top = rect.bottom
+            self.ball.bounce("y")
+            return "bottom"
+
+        elif self.ball.prev_rect.right <= rect.left:
+            self.ball.rect.right = rect.left
+            self.ball.bounce("x")
+            return "left"
+
+        elif self.ball.prev_rect.left >= rect.right:
+            self.ball.rect.left = rect.right
+            self.ball.bounce("x")
+            return "right"
+
+        return None
+
+    def paddle_collision(self):
+        if self.ball.rect.colliderect(self.paddle.rect):
+            side = self.resolve_collision(self.paddle.rect)
+
+            if side == "top":
+                self.ball.speed_x += self.paddle.direction
+                self.ball.speed_x = max(-self.ball.max_speed, min(self.ball.speed_x, self.ball.max_speed))
+
+    def wall_collision(self):
         if self.ball.rect.right >= WIDTH:
             self.ball.rect.right = WIDTH
             self.ball.bounce('x')
@@ -176,13 +193,12 @@ class Game:
             self.ball.rect.top = 0
             self.ball.bounce('y')
 
-        # paddle
-        if self.ball.rect.colliderect(self.paddle.rect):
-            self.ball.rect.bottom = self.paddle.rect.top
-            self.ball.bounce('y')
+    def handle_collisions(self):
+        # screen
+        self.wall_collision()
 
-            self.ball.speed_x += self.paddle.direction
-            self.ball.speed_x = max(-self.ball.max_speed, min(self.ball.speed_x, self.ball.max_speed))
+        # paddle
+        self.paddle_collision()
 
         # bricks
         self.bricks_collision()
@@ -221,15 +237,17 @@ class Game:
 
             self.draw_text("CLICK ANYWHERE TO START", WIDTH//8, HEIGHT // 2 + 50)
 
+    def draw_bricks(self):
+        for brick in self.bricks:
+            brick.draw(self.screen)
+
     def draw(self):
         self.screen.fill(self.screen_color)
 
         # draw ball, paddle, bricks, ui
         self.paddle.draw(self.screen)
         self.ball.draw(self.screen)
-
-        for brick in self.bricks:
-            brick.draw(self.screen)
+        self.draw_bricks()
 
         self.draw_ui()
 
