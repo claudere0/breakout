@@ -174,8 +174,13 @@ class Game:
         for brick in self.bricks:
             if self.ball.rect.colliderect(brick.rect):
                 brick.hit()
+                if not brick.is_alive:
+                    self.bricks.remove(brick)
+
                 self.ball.bounce('x')
                 self.ball.bounce('y')
+
+                break
 
     def update(self):
         # if not self.live_ball:
