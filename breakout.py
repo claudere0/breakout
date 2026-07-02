@@ -84,18 +84,6 @@ class Brick:
         if self.health <= 0:
             self.is_alive = False
 
-    def color(self):
-        if self.health == 4:
-            return BLUE
-        elif self.health == 3:
-            return GREEN
-        elif self.health == 2:
-            return YELLOW
-        elif self.health == 1:
-            return RED
-        else:
-            return
-
     def draw(self, screen):
         if not self.is_alive:
             return
