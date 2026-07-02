@@ -11,7 +11,7 @@ RED = (255,0,0)
 GREEN = (0,255,0)
 BLUE = (0,0,255)
 YELLOW = (255,255,0)
-MAGENTA = (255,0,255)
+MAGENTA = (255,127,255)
 CYAN = (0,255,255)
 WHITE = (255,255,255)
 BLACK = (0,0,0)
@@ -44,7 +44,7 @@ class Paddle:
         self.rect.x = int(self.x)
 
     def draw(self, screen):
-        pygame.draw.rect(screen, MAGENTA, self.rect)
+        pygame.draw.rect(screen, WHITE, self.rect)
 
 class Ball:
     def __init__(self, x, y):
@@ -73,7 +73,7 @@ class Ball:
             self.speed_y *= -1
 
     def draw(self, screen):
-        pygame.draw.circle(screen, CYAN, (self.rect.x + self.radius, self.rect.y + self.radius), self.radius)
+        pygame.draw.circle(screen, MAGENTA, (self.rect.x + self.radius, self.rect.y + self.radius), self.radius)
 
 class Brick:
     def __init__(self, x, y, health, width, height):
@@ -96,7 +96,7 @@ class Brick:
             return GREEN
         elif self.health == 2:
             return YELLOW
-        elif self.health == 2:
+        elif self.health == 1:
             return RED
         else:
             return
@@ -118,7 +118,7 @@ class Game:
         self.ball = Ball(int(WIDTH//2-WIDTH//64), int(WIDTH-(WIDTH//64)*6))
         self.craete_bricks()
 
-        self.game_over = 0
+        self.game_state = 0
         self.live_ball = False
 
         self.running = True
@@ -145,7 +145,7 @@ class Game:
         self.ball.reset(int(WIDTH//2-WIDTH//64), int(WIDTH-(WIDTH//64)*6))
         self.create_bricks()
 
-        self.game_over = 0
+        self.game_state = 0
         self.live_ball = False
 
     def handle_collisions(self):
@@ -182,6 +182,14 @@ class Game:
 
                 break
 
+    def check_game_state(self):
+        if self.ball.rect.bottom >= HEIGHT:
+            self.game_state = -1
+        
+        if all(not brick.is_alive for brick in self.bricks):
+            self.game_over = 1
+
+
     def update(self):
         # if not self.live_ball:
         #     return
@@ -191,7 +199,15 @@ class Game:
         self.ball.update()
         self.handle_collisions()
 
+        if self.game_state != 0:
+            self.live_ball = False
 
+    def draw_text(self):
+        pass
+
+    def draw_ui(self):
+        if self.game.state == 1:
+            self.draw_text()
 
     def draw(self):
         self.screen.fill(self.screen_color)
@@ -199,6 +215,7 @@ class Game:
         # draw ball, paddle, bricks, ui
         self.paddle.draw(self.screen)
         self.ball.draw(self.screen)
+
         for brick in self.bricks:
             brick.draw(self.screen)
 
@@ -220,6 +237,7 @@ class Game:
             self.handle_events()
             self.update()
             self.draw()
+
         pygame.quit()
 
 if __name__ == "__main__":
