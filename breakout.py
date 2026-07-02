@@ -56,8 +56,11 @@ class Ball:
         self.max_speed = 8
         self.radius = 8
         self.rect = pygame.Rect(x-self.radius, y-self.radius, self.radius * 2, self.radius * 2)
+        self.prev_rect = self.rect.copy()
     
     def update(self):
+        self.prev_rect = self.rect.copy()
+        
         self.rect.x += self.speed_x
         self.rect.y += self.speed_y
 
@@ -131,6 +134,34 @@ class Game:
             for col in range(COLS):
                 self.bricks.append(Brick(col * (WIDTH//COLS), row * (HEIGHT//16), health, WIDTH//COLS, HEIGHT//16))
 
+    def bricks_collision(self):
+        for brick in self.bricks:
+            if not self.ball.rect.colliderect(brick.rect):
+                continue
+
+            if self.ball.prev_rect.bottom <= brick.rect.top:
+                self.ball.rect.bottom = brick.rect.top
+                self.ball.bounce("y")
+
+            elif self.ball.prev_rect.top >= brick.rect.bottom:
+                self.ball.rect.top = brick.rect.bottom
+                self.ball.bounce("y")
+
+            elif self.ball.prev_rect.right <= brick.rect.left:
+                self.ball.rect.right = brick.rect.left
+                self.ball.bounce("x")
+
+            elif self.ball.prev_rect.left >= brick.rect.right:
+                self.ball.rect.left = brick.rect.right
+                self.ball.bounce("x")
+
+            brick.hit()
+
+            if not brick.is_alive:
+                self.bricks.remove(brick)
+
+            break
+
     def handle_collisions(self):
         # screen
         if self.ball.rect.right >= WIDTH:
@@ -154,22 +185,13 @@ class Game:
             self.ball.speed_x = max(-self.ball.max_speed, min(self.ball.speed_x, self.ball.max_speed))
 
         # bricks
-        for brick in self.bricks:
-            if self.ball.rect.colliderect(brick.rect):
-                brick.hit()
-                if not brick.is_alive:
-                    self.bricks.remove(brick)
-
-                self.ball.bounce('x')
-                self.ball.bounce('y')
-
-                break
+        self.bricks_collision()
 
     def check_game_state(self):
         if self.ball.rect.bottom >= HEIGHT:
             self.game_state = -1
         
-        if all(not brick.is_alive for brick in self.bricks):
+        if not self.bricks:
             self.game_state = 1
 
 
