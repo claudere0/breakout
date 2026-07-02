@@ -117,14 +117,14 @@ class Game:
 
         self.paddle = Paddle()
         self.ball = Ball(int(WIDTH//2-WIDTH//64), int(WIDTH-(WIDTH//64)*6))
-        self.craete_bricks()
+        self.create_bricks()
 
         self.game_state = 0
         self.live_ball = False
 
         self.running = True
 
-    def craete_bricks(self):
+    def create_bricks(self):
         self.bricks = []
 
         for row in range(ROWS):
@@ -147,7 +147,7 @@ class Game:
         self.create_bricks()
 
         self.game_state = 0
-        self.live_ball = False
+        self.live_ball = True
 
     def handle_collisions(self):
         # screen
@@ -192,8 +192,8 @@ class Game:
 
 
     def update(self):
-        # if not self.live_ball:
-        #     return
+        if not self.live_ball:
+            return
 
         # update objects(paddle, ball), handle_collisions(screen, paddle, bricks), check_game_state
         self.paddle.update()
@@ -208,12 +208,13 @@ class Game:
         self.screen.blit(text_image, (x, y))
 
     def draw_ui(self):
-        if self.game.state == 1:
-            self.draw_text("YOU WON!", WIDTH//4, HEIGHT // 2 + 32)
-        elif self.game.state == -1:
-            self.draw_text("YOU LOST!", WIDTH//4, HEIGHT // 2 + 32)
+        if not self.live_ball:
+            if self.game_state == 1:
+                self.draw_text("YOU WON!", WIDTH//4, HEIGHT // 2 + 32)
+            elif self.game_state == -1:
+                self.draw_text("YOU LOST!", WIDTH//4, HEIGHT // 2 + 32)
 
-        self.draw_text("CLICK ANYWHERE TO START", WIDTH//8, HEIGHT // 2 + 50)
+            self.draw_text("CLICK ANYWHERE TO START", WIDTH//8, HEIGHT // 2 + 50)
 
     def draw(self):
         self.screen.fill(self.screen_color)
@@ -225,6 +226,8 @@ class Game:
         for brick in self.bricks:
             brick.draw(self.screen)
 
+        self.draw_ui()
+
         pygame.display.flip()
 
     def handle_events(self):
@@ -234,8 +237,11 @@ class Game:
             elif event.type == pygame.KEYDOWN:
                 if event.key == pygame.K_q:
                     self.running = False
-                # elif event.key == pygame.K_r:
-                #     self.restart()
+                elif event.key == pygame.K_r:
+                    self.restart()
+            elif event.type == pygame.MOUSEBUTTONDOWN:
+                if not self.live_ball:
+                    self.restart()
 
     def run(self):
         while self.running:
