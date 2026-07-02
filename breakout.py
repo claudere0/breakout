@@ -112,6 +112,7 @@ class Game:
         self.screen = pygame.display.set_mode((WIDTH, HEIGHT))
         pygame.display.set_caption("breakout")
         self.clock = pygame.time.Clock()
+        self.font = pygame.font.SysFont('monospace', 24)
         self.screen_color = BLACK
 
         self.paddle = Paddle()
@@ -202,12 +203,17 @@ class Game:
         if self.game_state != 0:
             self.live_ball = False
 
-    def draw_text(self):
-        pass
+    def draw_text(self, text, x, y):
+        text_image = self.font.render(text, True, WHITE)
+        self.screen.blit(text_image, (x, y))
 
     def draw_ui(self):
         if self.game.state == 1:
-            self.draw_text()
+            self.draw_text("YOU WON!", WIDTH//4, HEIGHT // 2 + 32)
+        elif self.game.state == -1:
+            self.draw_text("YOU LOST!", WIDTH//4, HEIGHT // 2 + 32)
+
+        self.draw_text("CLICK ANYWHERE TO START", WIDTH//8, HEIGHT // 2 + 50)
 
     def draw(self):
         self.screen.fill(self.screen_color)
