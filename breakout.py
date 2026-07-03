@@ -24,7 +24,7 @@ class Paddle:
         self.width = 64
         self.height = 16
         self.x = int((WIDTH / 2) - (self.width / 2))
-        self.y = int(HEIGHT - (self.height * 4))
+        self.y = int(HEIGHT - (self.height * 2))
         self.speed = 8
         self.rect = pygame.Rect(int(self.x), int(self.y), self.width, self.height)
         self.direction = 0
@@ -55,7 +55,7 @@ class Ball:
         self.speed_y = -4
         self.max_speed = 8
         self.radius = 8
-        self.rect = pygame.Rect(x, y - 16, self.radius * 2, self.radius * 2)
+        self.rect = pygame.Rect(x, y, self.radius * 2, self.radius * 2)
         self.prev_rect = self.rect.copy()
     
     def update(self):
@@ -102,7 +102,7 @@ class Game:
         self.screen_color = BLACK
 
         self.paddle = Paddle()
-        self.ball = Ball(int(WIDTH//2-WIDTH//64), int(WIDTH-(WIDTH//8)))
+        self.ball = Ball(int(WIDTH//2-WIDTH//64), int(WIDTH-(WIDTH//8))-16)
         self.create_bricks()
 
         self.game_state = 0
@@ -112,7 +112,7 @@ class Game:
 
     def restart(self):
         self.paddle.reset()
-        self.ball.reset(int(WIDTH//2-WIDTH//64), int(WIDTH-(WIDTH//8)))
+        self.ball.reset(int(WIDTH//2-WIDTH//64), int(WIDTH-(WIDTH//8))-16)
         self.create_bricks()
 
         self.game_state = 0
@@ -231,24 +231,25 @@ class Game:
     def draw_ui(self):
         if not self.live_ball:
             if self.game_state == 1:
-                self.draw_text("YOU WON!", WIDTH//4, HEIGHT // 2 + 32)
+                self.draw_text("YOU WON!", WIDTH//4+64, HEIGHT // 2 + 64)
             elif self.game_state == -1:
-                self.draw_text("YOU LOST!", WIDTH//4, HEIGHT // 2 + 32)
+                self.draw_text("YOU LOST!", WIDTH//4+64, HEIGHT // 2 + 64)
 
-            self.draw_text("CLICK ANYWHERE TO START", WIDTH//8, HEIGHT // 2 + 50)
+            self.draw_text("CLICK ANYWHERE TO START", WIDTH//8 + 32, HEIGHT // 2 + 96)
 
     def draw_bricks(self):
         for brick in self.bricks:
             brick.draw(self.screen)
 
-    def draw(self):
-        self.screen.fill(self.screen_color)
-
-        # draw ball, paddle, bricks, ui
+    def draw_objects(self):
         self.paddle.draw(self.screen)
         self.ball.draw(self.screen)
         self.draw_bricks()
 
+    def draw(self):
+        self.screen.fill(self.screen_color)
+
+        self.draw_objects()
         self.draw_ui()
 
         pygame.display.flip()
