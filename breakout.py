@@ -118,21 +118,48 @@ class Game:
         self.game_state = 0
         self.live_ball = True
 
+
+    def selecte_level(self, level):
+        if level == 1:
+            self.map = [
+            [1,1,1,1,1,1,1,1],
+            [1,1,1,1,1,1,1,1],
+            [1,1,1,1,1,1,1,1],
+            [1,1,1,1,1,1,1,1],
+            [1,1,1,1,1,1,1,1],
+            [1,1,1,1,1,1,1,1],
+            [1,1,1,1,1,1,1,1],
+            [1,1,1,1,1,1,1,1],
+        ]
+
     def create_bricks(self):
+        self.map = [
+            [4,4,4,4,4,4,4,4],
+            [4,0,0,4,4,0,0,4],
+            [3,0,0,3,3,0,0,3],
+            [3,3,3,3,3,3,3,3],
+            [2,2,0,2,2,0,2,2],
+            [2,2,0,2,2,0,2,2],
+            [1,1,0,0,0,0,1,1],
+            [1,1,1,1,1,1,1,1],
+        ]
+
         self.bricks = []
 
-        for row in range(ROWS):
-            if row < 2:
-                health = 4
-            elif row < 4:
-                health = 3
-            elif row < 6:
-                health = 2
-            elif row < 8:
-                health = 1
+        brick_w = WIDTH // COLS
+        brick_h = HEIGHT // 16
 
-            for col in range(COLS):
-                self.bricks.append(Brick(col * (WIDTH//COLS), row * (HEIGHT//16), health, WIDTH//COLS, HEIGHT//16))
+        for row, line in enumerate(self.map):
+            for col, health in enumerate(line):
+                if health == 0:
+                    continue
+
+                x = col * brick_w
+                y = row * brick_h
+
+                self.bricks.append(
+                    Brick(x, y, health, brick_w, brick_h)
+                )
 
     def bricks_collision(self):
         for brick in self.bricks:
