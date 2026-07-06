@@ -1,20 +1,6 @@
 import pygame
+from config import *
 pygame.init()
-
-WIDTH = 512
-HEIGHT = 512
-FPS = 60
-ROWS = 8
-COLS = 8
-
-RED = (255,0,0)
-GREEN = (0,255,0)
-BLUE = (0,0,255)
-YELLOW = (255,255,0)
-MAGENTA = (255,127,255)
-CYAN = (0,255,255)
-WHITE = (255,255,255)
-BLACK = (0,0,0)
 
 class Paddle:
     def __init__(self):
@@ -71,7 +57,7 @@ class Ball:
             self.speed_y *= -1
 
     def draw(self, screen):
-        pygame.draw.circle(screen, MAGENTA, (self.rect.x + self.radius, self.rect.y + self.radius), self.radius)
+        pygame.draw.circle(screen, CYAN, (self.rect.x + self.radius, self.rect.y + self.radius), self.radius)
 
 class Brick:
     def __init__(self, x, y, health, width, height):
