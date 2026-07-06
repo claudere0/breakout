@@ -103,9 +103,9 @@ class Game:
     #     self.start_level(self.level)
 
     def select_level(self, level):
-        if level == 1:
+        LEVELS = [
             # "Chessboard"
-            self.map = [
+            [
                 [1,0,1,0,1,0,1,0],
                 [0,1,0,1,0,1,0,1],
                 [1,0,1,0,1,0,1,0],
@@ -114,11 +114,9 @@ class Game:
                 [0,1,0,1,0,1,0,1],
                 [1,0,1,0,1,0,1,0],
                 [0,1,0,1,0,1,0,1],
-            ]
-
-        elif level == 2:
+            ],
             # "Pyramid" (Classic shape with increasing durability towards the top)
-            self.map = [
+            [
                 [0,0,0,3,3,0,0,0],
                 [0,0,3,3,3,3,0,0],
                 [0,2,2,2,2,2,2,0],
@@ -127,11 +125,9 @@ class Game:
                 [1,1,1,1,1,1,1,1],
                 [0,0,0,0,0,0,0,0],
                 [0,0,0,0,0,0,0,0],
-            ]
-
-        elif level == 3:
+            ],
             # "Columns" (Vertical lines allowing the ball to shoot straight to the top)
-            self.map = [
+            [
                 [4,0,3,0,3,0,4,0],
                 [4,0,3,0,3,0,4,0],
                 [2,0,2,0,2,0,2,0],
@@ -140,11 +136,9 @@ class Game:
                 [1,0,1,0,1,0,1,0],
                 [1,0,1,0,1,0,1,0],
                 [1,0,1,0,1,0,1,0],
-            ]
-
-        elif level == 4:
+            ],
             # "Invader" (A fun pixel-art alien design)
-            self.map = [
+            [
                 [0,1,0,0,0,0,1,0],
                 [0,0,1,0,0,1,0,0],
                 [0,2,2,2,2,2,2,0],
@@ -153,11 +147,9 @@ class Game:
                 [0,3,3,3,3,3,3,0],
                 [0,0,1,0,0,1,0,0],
                 [0,1,0,0,0,0,1,0],
-            ]
-
-        elif level == 5:
+            ],
             # "Fortress" (Your original fifth level with a strong roof and side gaps)
-            self.map = [
+            [
                 [4,4,4,4,4,4,4,4],
                 [4,0,0,4,4,0,0,4],
                 [3,0,0,3,3,0,0,3],
@@ -166,11 +158,9 @@ class Game:
                 [2,2,0,2,2,0,2,2],
                 [1,1,0,0,0,0,1,1],
                 [1,1,1,1,1,1,1,1],
-            ]
-
-        elif level == 6:
+            ],
             # "Hourglass" (Narrows in the center, requires precise aiming)
-            self.map = [
+            [
                 [4,4,4,4,4,4,4,4],
                 [0,3,3,3,3,3,3,0],
                 [0,0,2,2,2,2,0,0],
@@ -179,11 +169,9 @@ class Game:
                 [0,0,2,2,2,2,0,0],
                 [0,3,3,3,3,3,3,0],
                 [4,4,4,4,4,4,4,4],
-            ]
-
-        elif level == 7:
+            ],
             # "Maze" (An armored outer box with hidden paths and a weak bottom layer)
-            self.map = [
+            [
                 [4,4,4,4,4,4,4,4],
                 [4,0,0,0,0,0,0,4],
                 [4,0,3,3,3,3,0,4],
@@ -192,11 +180,9 @@ class Game:
                 [4,0,2,2,2,2,0,4],
                 [0,0,0,0,0,0,0,0],
                 [1,1,1,1,1,1,1,1],
-            ]
-
-        elif level == 8:
-            # "Final Boss" (A dense and challenging grid with heavy armor)
-            self.map = [
+            ],
+            # "Final" (A dense and challenging grid with heavy armor)
+            [
                 [4,4,4,4,4,4,4,4],
                 [4,4,4,4,4,4,4,4],
                 [4,3,3,3,3,3,3,4],
@@ -206,6 +192,9 @@ class Game:
                 [0,0,0,0,0,0,0,0],
                 [1,0,1,0,0,1,0,1],
             ]
+        ]
+
+        self.map = LEVELS[level-1]
 
     def create_bricks(self):
         self.bricks = []
