@@ -89,7 +89,7 @@ class Game:
         self.paddle = Paddle()
         self.ball = Ball(int(WIDTH//2-WIDTH//64), int(WIDTH-(WIDTH//8))-16)
         self.level = 1
-        self.select_level(1)
+        self.build_level(1)
         self.create_bricks()
 
         self.state = MENU
@@ -102,7 +102,7 @@ class Game:
     # def restart(self):
     #     self.start_level(self.level)
 
-    def select_level(self, level):
+    def build_level(self, level):
         LEVELS = [
             # "Chessboard"
             [
@@ -330,7 +330,7 @@ class Game:
 
     def start_level(self, level):
         self.level = level
-        self.select_level(level)
+        self.build_level(level)
         self.create_bricks()
         self.paddle.reset()
         self.ball.reset(int(WIDTH//2-WIDTH//64), int(WIDTH-(WIDTH//8))-16)
