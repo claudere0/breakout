@@ -96,11 +96,11 @@ class Game:
         self.running = True
 
     def restart(self):
-        self.paddle.reset()
-        self.ball.reset(int(WIDTH//2-WIDTH//64), int(WIDTH-(WIDTH//8))-16)
-        self.select_level(self.level)
-        self.create_bricks()
         self.state = MENU
+
+    # alternative restart
+    # def restart(self):
+    #     self.start_level(self.level)
 
     def select_level(self, level):
         if level == 1:
@@ -295,8 +295,7 @@ class Game:
     def check_game_state(self):
         if self.ball.rect.bottom >= HEIGHT:
             self.state = LOSE
-        
-        if not self.bricks:
+        elif not self.bricks:
             self.state = WIN
 
     def update(self):
@@ -341,6 +340,7 @@ class Game:
         pygame.display.flip()
 
     def start_level(self, level):
+        self.level = level
         self.select_level(level)
         self.create_bricks()
         self.paddle.reset()
