@@ -95,6 +95,7 @@ class Game:
         self.game_state = 0
         self.live_ball = False
 
+        self.state
         self.running = True
 
     def restart(self):
@@ -109,7 +110,7 @@ class Game:
 
     def selecte_level(self, level):
         if level == 1:
-            # "Chessboard" (Your original first level)
+            # "Chessboard"
             self.map = [
                 [1,0,1,0,1,0,1,0],
                 [0,1,0,1,0,1,0,1],
@@ -319,6 +320,21 @@ class Game:
 
         if self.game_state != 0:
             self.live_ball = False
+
+    def new_update(self):
+        if self.state == MENU:
+            return
+
+        elif self.state == PLAYING:
+            self.paddle.update()
+            self.ball.update()
+            self.handle_collisions()
+
+        elif self.state == WIN:
+            return
+
+        elif self.state == LOSE:
+            return
 
     def draw_text(self, text, x, y):
         text_image = self.font.render(text, True, WHITE)
