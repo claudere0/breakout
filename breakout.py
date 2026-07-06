@@ -78,7 +78,6 @@ class Brick:
             return
         pygame.draw.rect(screen, self.colors[self.health], self.rect)
 
-
 class Game:
     def __init__(self):
         self.screen = pygame.display.set_mode((WIDTH, HEIGHT))
@@ -89,26 +88,19 @@ class Game:
 
         self.paddle = Paddle()
         self.ball = Ball(int(WIDTH//2-WIDTH//64), int(WIDTH-(WIDTH//8))-16)
-        self.selecte_level(1)
+        self.select_level(1)
         self.create_bricks()
 
-        self.game_state = 0
-        self.live_ball = False
-
-        self.state
+        self.state = MENU
         self.running = True
 
     def restart(self):
         self.paddle.reset()
         self.ball.reset(int(WIDTH//2-WIDTH//64), int(WIDTH-(WIDTH//8))-16)
-        self.selecte_level(1)
         self.create_bricks()
+        self.state = MENU
 
-        self.game_state = 0
-        self.live_ball = True
-
-
-    def selecte_level(self, level):
+    def select_level(self, level):
         if level == 1:
             # "Chessboard"
             self.map = [
@@ -227,9 +219,7 @@ class Game:
                 x = col * brick_w
                 y = row * brick_h
 
-                self.bricks.append(
-                    Brick(x, y, health, brick_w, brick_h)
-                )
+                self.bricks.append(Brick(x, y, health, brick_w, brick_h))
 
     def bricks_collision(self):
         for brick in self.bricks:
@@ -302,52 +292,22 @@ class Game:
 
     def check_game_state(self):
         if self.ball.rect.bottom >= HEIGHT:
-            self.game_state = -1
+            self.state = LOSE
         
         if not self.bricks:
-            self.game_state = 1
-
+            self.state = WIN
 
     def update(self):
-        if not self.live_ball:
+        if self.state != PLAYING:
             return
-
-        # update objects(paddle, ball), handle_collisions(screen, paddle, bricks), check_game_state
         self.paddle.update()
         self.ball.update()
         self.handle_collisions()
         self.check_game_state()
 
-        if self.game_state != 0:
-            self.live_ball = False
-
-    def new_update(self):
-        if self.state == MENU:
-            return
-
-        elif self.state == PLAYING:
-            self.paddle.update()
-            self.ball.update()
-            self.handle_collisions()
-
-        elif self.state == WIN:
-            return
-
-        elif self.state == LOSE:
-            return
-
     def draw_text(self, text, x, y):
         text_image = self.font.render(text, True, WHITE)
         self.screen.blit(text_image, (x, y))
-
-    def draw_ui(self):
-        if not self.live_ball:
-            if self.game_state == 1:
-                self.draw_text("YOU WON!", WIDTH//4+64, HEIGHT // 2 + 64)
-            elif self.game_state == -1:
-                self.draw_text("YOU LOST!", WIDTH//4+64, HEIGHT // 2 + 64)
-
-            self.draw_text("CLICK ANYWHERE TO START", WIDTH//8 + 32, HEIGHT // 2 + 96)
 
     def draw_bricks(self):
         for brick in self.bricks:
@@ -360,9 +320,18 @@ class Game:
 
     def draw(self):
         self.screen.fill(self.screen_color)
-
-        self.draw_objects()
-        self.draw_ui()
+        if self.state == PLAYING:
+            self.draw_objects()
+        elif self.state == MENU:
+            self.draw_text("CHOOSE LEVEL", WIDTH//4+64, HEIGHT // 16 + 64)
+            self.draw_text("PRESS BUTTON FROM 1 TO 8", WIDTH//8+64, HEIGHT // 8 + 64)
+            self.draw_text("TO SELECT LEVEL", WIDTH//4+48, HEIGHT // 4 + 32)
+        elif self.state == WIN:
+            self.draw_text("YOU WON!", WIDTH//4+64, HEIGHT // 2 + 64)
+            self.draw_text("PRESS R TO RESTART", WIDTH//8 + 32, HEIGHT // 2 + 96)
+        elif self.state == LOSE:
+            self.draw_text("YOU LOST!", WIDTH//4+64, HEIGHT // 2 + 64)
+            self.draw_text("PRESS R TO RESTART", WIDTH//8 + 32, HEIGHT // 2 + 96)
 
         pygame.display.flip()
 
@@ -375,9 +344,32 @@ class Game:
                     self.running = False
                 elif event.key == pygame.K_r:
                     self.restart()
-            elif event.type == pygame.MOUSEBUTTONDOWN:
-                if not self.live_ball:
-                    self.restart()
+                if self.state == MENU:
+                    if event.key == pygame.K_1:
+                        self.select_level(1)
+                    elif event.key == pygame.K_2:
+                        self.select_level(2)
+                    elif event.key == pygame.K_3:
+                        self.select_level(3)
+                    elif event.key == pygame.K_4:
+                        self.select_level(4)
+                    elif event.key == pygame.K_5:
+                        self.select_level(5)
+                    elif event.key == pygame.K_6:
+                        self.select_level(6)
+                    elif event.key == pygame.K_7:
+                        self.select_level(7)
+                    elif event.key == pygame.K_8:
+                        self.select_level(8)
+                    else:
+                        continue
+                    self.create_bricks()
+                    self.paddle.reset()
+                    self.ball.reset(int(WIDTH//2-WIDTH//64), int(WIDTH-(WIDTH//8))-16)
+                    self.state = PLAYING
+            # elif event.type == pygame.MOUSEBUTTONDOWN:
+            #     if not self.live_ball:
+            #         self.state = MENU
 
     def run(self):
         while self.running:
