@@ -156,6 +156,7 @@ class Game:
             self.draw_objects()
             self.draw_text("YOU WON!", WIDTH//4+64, HEIGHT // 2 + 64)
             self.draw_text("PRESS R TO RESTART", WIDTH//8 + 32, HEIGHT // 2 + 96)
+            self.draw_text("PRESS N TO NEXT", WIDTH//8 + 64, HEIGHT // 2 + 128)
         elif self.state == LOSE:
             self.draw_objects()
             self.draw_text("YOU LOST!", WIDTH//4+70, HEIGHT // 2 + 64)
@@ -180,6 +181,8 @@ class Game:
                     self.running = False
                 elif event.key == pygame.K_r and self.state in (WIN, LOSE):
                     self.restart()
+                elif event.key == pygame.K_n and self.state == WIN:
+                    self.start_level(self.level+1)
                 if self.state == MENU:
                     if event.key == pygame.K_1:
                         self.start_level(1)

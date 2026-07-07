@@ -1,5 +1,5 @@
 LEVELS = [
-    # "Chessboard"
+    "Chessboard"
     [
         [1,0,1,0,1,0,1,0],
         [0,1,0,1,0,1,0,1],
@@ -10,6 +10,7 @@ LEVELS = [
         [1,0,1,0,1,0,1,0],
         [0,1,0,1,0,1,0,1],
     ],
+    
     # "Pyramid" (Classic shape with increasing durability towards the top)
     [
         [0,0,0,3,3,0,0,0],
