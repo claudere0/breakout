@@ -1,5 +1,5 @@
 LEVELS = [
-    "Chessboard"
+    # "Chessboard"
     [
         [1,0,1,0,1,0,1,0],
         [0,1,0,1,0,1,0,1],

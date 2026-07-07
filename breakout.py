@@ -182,9 +182,8 @@ class Game:
                     self.running = False
                 elif event.key == pygame.K_r and self.state in (WIN, LOSE):
                     self.restart()
-                elif self.level != 8:
-                    if event.key == pygame.K_n and self.state == WIN:
-                        self.start_level(self.level+1)
+                if event.key == pygame.K_n and self.state == WIN and self.level != 8:
+                    self.start_level(self.level+1)
                 elif self.state == MENU:
                     if event.key == pygame.K_1:
                         self.start_level(1)
