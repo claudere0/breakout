@@ -10,7 +10,7 @@ class Paddle:
         self.height = 16
         self.x = int((WIDTH / 2) - (self.width / 2))
         self.y = int(HEIGHT - (self.height * 2))
-        self.speed = 8
+        self.speed = 480
         self.rect = pygame.Rect(int(self.x), int(self.y), self.width, self.height)
         self.direction = 0
 
@@ -19,12 +19,12 @@ class Paddle:
         keys = pygame.key.get_pressed()
 
         if keys[pygame.K_LEFT] and self.rect.left >= 0:
-            self.x -= self.speed
-            self.direction = -1
+            self.x -= self.speed * dt
+            self.direction = -60 * dt
 
         if keys[pygame.K_RIGHT] and self.rect.right <= WIDTH:
-            self.x += self.speed
-            self.direction = 1
+            self.x += self.speed * dt
+            self.direction = 60 * dt
         
         self.rect.x = int(self.x)
 
@@ -36,18 +36,18 @@ class Ball:
         self.reset(x, y)
     
     def reset(self, x, y):
-        self.speed_x = 4
-        self.speed_y = -4
-        self.max_speed = 8
+        self.speed_x = 240
+        self.speed_y = -240
+        self.max_speed = 480
         self.radius = 8
         self.rect = pygame.Rect(x, y, self.radius * 2, self.radius * 2)
         self.prev_rect = self.rect.copy()
     
-    def update(self):
+    def update(self, dt):
         self.prev_rect = self.rect.copy()
         
-        self.rect.x += self.speed_x
-        self.rect.y += self.speed_y
+        self.rect.x += int(self.speed_x * dt)
+        self.rect.y += int(self.speed_y * dt)
 
     def bounce(self, direction):
         if direction == 'x':

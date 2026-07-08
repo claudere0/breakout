@@ -65,6 +65,7 @@ class Game:
     def resolve_collision(self, rect):
         if self.ball.prev_rect.bottom <= rect.top:
             self.ball.rect.bottom = rect.top
+            self.ball.y = self.ball.rect.y
             self.ball.bounce("y")
             return "top"
 
@@ -202,7 +203,7 @@ class Game:
     def run(self):
         while self.running:
             # self.clock.tick(FPS)
-            dt = self.clock.tick(self.FPS)/1000
+            dt = self.clock.tick(FPS)/1000
             self.handle_events()
             self.update(dt)
             self.draw()
