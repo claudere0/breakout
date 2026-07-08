@@ -8,8 +8,8 @@ class Paddle:
     def reset(self):
         self.width = 64
         self.height = 16
-        self.x = int((WIDTH / 2) - (self.width / 2))
-        self.y = int(HEIGHT - (self.height * 2))
+        self.x = float((WIDTH - self.width) / 2)
+        self.y = float(HEIGHT - self.height * 2)
         self.speed = 480
         self.rect = pygame.Rect(int(self.x), int(self.y), self.width, self.height)
         self.direction = 0
@@ -20,11 +20,11 @@ class Paddle:
 
         if keys[pygame.K_LEFT] and self.rect.left >= 0:
             self.x -= self.speed * dt
-            self.direction = -60 * dt
+            self.direction = -self.speed
 
         if keys[pygame.K_RIGHT] and self.rect.right <= WIDTH:
             self.x += self.speed * dt
-            self.direction = 60 * dt
+            self.direction = self.speed
         
         self.rect.x = int(self.x)
 
@@ -33,21 +33,28 @@ class Paddle:
 
 class Ball:
     def __init__(self, x, y):
-        self.reset(x, y)
+        self.x = float(x)
+        self.y = float(y)
+        self.reset(self.x, self.y)
     
     def reset(self, x, y):
+        self.x = float(x)
+        self.y = float(y)
         self.speed_x = 240
         self.speed_y = -240
         self.max_speed = 480
         self.radius = 8
-        self.rect = pygame.Rect(x, y, self.radius * 2, self.radius * 2)
+        self.rect = pygame.Rect(int(self.x), int(self.y), self.radius * 2, self.radius * 2)
         self.prev_rect = self.rect.copy()
     
     def update(self, dt):
         self.prev_rect = self.rect.copy()
         
-        self.rect.x += int(self.speed_x * dt)
-        self.rect.y += int(self.speed_y * dt)
+        self.x += self.speed_x * dt
+        self.y += self.speed_y * dt
+
+        self.rect.x = int(self.x)
+        self.rect.y = int(self.y)
 
     def bounce(self, direction):
         if direction == 'x':
