@@ -107,14 +107,9 @@ class Game:
             self.ball.bounce('y')
 
     def handle_collisions(self):
-        # screen
-        self.wall_collision()
-
-        # paddle
-        self.paddle_collision()
-
-        # bricks
-        self.bricks_collision()
+        self.wall_collision() # screen
+        self.paddle_collision() # paddle
+        self.bricks_collision() # bricks
 
     def check_game_state(self):
         if self.ball.rect.bottom >= HEIGHT:
@@ -122,11 +117,11 @@ class Game:
         elif not self.bricks:
             self.state = WIN
 
-    def update(self):
+    def update(self, dt):
         if self.state != PLAYING:
             return
-        self.paddle.update()
-        self.ball.update()
+        self.paddle.update(dt)
+        self.ball.update(dt)
         self.handle_collisions()
         self.check_game_state()
 
@@ -206,9 +201,10 @@ class Game:
 
     def run(self):
         while self.running:
-            self.clock.tick(FPS)
+            # self.clock.tick(FPS)
+            dt = self.clock.tick(self.FPS)/1000
             self.handle_events()
-            self.update()
+            self.update(dt)
             self.draw()
 
         pygame.quit()

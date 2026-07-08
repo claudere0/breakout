@@ -14,7 +14,7 @@ class Paddle:
         self.rect = pygame.Rect(int(self.x), int(self.y), self.width, self.height)
         self.direction = 0
 
-    def update(self):
+    def update(self, dt):
         self.direction = 0
         keys = pygame.key.get_pressed()
 
