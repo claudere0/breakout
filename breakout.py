@@ -181,24 +181,8 @@ class Game:
                 if event.key == pygame.K_n and self.state == WIN and self.level != 8:
                     self.start_level(self.level+1)
                 elif self.state == MENU:
-                    if event.key == pygame.K_1:
-                        self.start_level(1)
-                    elif event.key == pygame.K_2:
-                        self.start_level(2)
-                    elif event.key == pygame.K_3:
-                        self.start_level(3)
-                    elif event.key == pygame.K_4:
-                        self.start_level(4)
-                    elif event.key == pygame.K_5:
-                        self.start_level(5)
-                    elif event.key == pygame.K_6:
-                        self.start_level(6)
-                    elif event.key == pygame.K_7:
-                        self.start_level(7)
-                    elif event.key == pygame.K_8:
-                        self.start_level(8)
-                    else:
-                        continue
+                    if pygame.K_1 <= event.key <= pygame.K_8:
+                        self.start_level(event.key - pygame.K_0)
 
     def run(self):
         while self.running:
